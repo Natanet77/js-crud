@@ -6,7 +6,7 @@ const router = express.Router()
 // ================================================================
 
 //=================================================================
-=======
+
 class User {
   static #list = []
   constructor(email, login, password) {
@@ -59,7 +59,6 @@ class User {
   }
 }
 //================================================================
-
 
 class Product {
   static #list = []
@@ -214,9 +213,8 @@ router.post('/product-edit', function (req, res) {
   })
 
   console.log(Product.getList())
-=======
-  const list = User.getList()
 
+  const list = User.getList()
 
   // ↙️ cюди вводимо назву файлу з сontainer
   res.render('alert', {
@@ -233,7 +231,6 @@ router.post('/product-edit', function (req, res) {
         isEmpty: list.length === 0,
       },
     },
-
   })
 
   // ↑↑ сюди вводимо JSON дані
