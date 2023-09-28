@@ -294,32 +294,21 @@ router.get('/spotify-track-delete', function (req, res) {
 
 router.get('/spotify-track-add', function (req, res) {
   const playlistId = Number(req.query.playlistId)
-  const trackId = Number(req.query.trackId)
 
   const playlist = Playlist.getById(playlistId)
-  const track = Track.getById(trackId)
+  const allTracks = Track.getList()
 
-  if (!playlist) {
-    return res.render('alert', {
-      style: 'alert',
+  console.log(playlistId, playlist, allTracks)
 
-      data: {
-        message: 'Помилка',
-        info: 'Такого плейліста не знайдено',
-        link: `/spotify-playList&id=${playlistId}`,
-      },
-    })
-  }
   res.render('spotify-track-add', {
     style: 'spotify-track-add',
 
     data: {
       playlistId: playlist.id,
-      tracks: Track.getList(),
+      tracks: allTracks,
+      link: `/spotify-track-add?playlistId={playlistId}}&trackId=={id}}`,
     },
   })
-
-  playlist.addTrack(trackId)
 })
 
 router.post('/spotify-track-add', function (req, res) {
@@ -328,16 +317,43 @@ router.post('/spotify-track-add', function (req, res) {
 
   const playlist = Playlist.getById(playlistId)
 
+  if (!playlist) {
+    return res.render('alert', {
+      style: 'alert',
+
+      data: {
+        message: 'Помилка',
+        info: 'Такого плейліста не знайдено',
+        link: `/spotify-playlist?id=${playlistId}`,
+      },
+    })
+  }
+
+  const trackToAdd = Track.getList().find(
+    (track) => track.id === trackId,
+  )
+
+  if (!trackToAdd) {
+    return res.render('alert', {
+      style: 'alert',
+      data: {
+        message: 'Помилка',
+        info: 'Такого треку не знайдено',
+        link: `/spotify-track-add?playlistId=${playlistId}`,
+      },
+    })
+  }
+
+  playlist.tracks.push(trackToAdd)
+
   res.render('spotify-playlist', {
     style: 'spotify-playlist',
-
     data: {
       playlistId: playlist.id,
       tracks: playlist.tracks,
       name: playlist.name,
     },
   })
-  playlist.addTrack(trackId)
 })
 
 // ==========================================================================
